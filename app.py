@@ -2,7 +2,6 @@ import random
 import streamlit as st
 
 
-# プレイヤーのステータス管理
 class Player:
 
     def __init__(self, name):
@@ -13,25 +12,41 @@ class Player:
         self.married = False
 
 
-# イベント定義
+# 全29マス分のイベントを定義（100%イベントが発生します！）
 EVENTS = {
-    1: ("初任給支給！", 50000, None),
-    3: ("ビジネス本を読んで勉強した。", -5000, "会社員"),
-    5: ("宝くじが当たった！", 200000, None),
-    7: ("素敵な出会いがあった！結婚します。", 0, "結婚"),
-    10: ("YouTubeチャンネルを開設した。", -20000, "YouTuber"),
-    12: ("家賃の更新月だった。", -60000, None),
-    15: ("給料日！ボーナスも入った。", 150000, None),
-    18: ("財布を落としてしまった…", -10000, None),
-    22: ("株への投資が大成功！", 300000, None),
-    25: ("高級レストランで贅沢な食事をした。", -30000, None),
-    28: ("怪我をして入院してしまった。", -50000, None),
+    1: ("初任給支給！生活が安定してきた。", 50000, None),
+    2: ("スマホの画面がバキバキに割れた…修理代発生。", -15000, None),
+    3: ("ビジネス本を読んで猛勉強！", -5000, "会社員"),
+    4: ("コンビニのクジで特賞の高級肉が当たった！", 10000, None),
+    5: ("宝くじが当選！一攫千金！", 200000, None),
+    6: ("サブスクの解約を忘れていて引き落とされた。", -8000, None),
+    7: ("運命の出会い！電撃結婚！", 0, "結婚"),
+    8: ("歯が激しく痛み出し、親知らずを抜歯した。", -12000, None),
+    9: ("フリマアプリで不用品が高く売れた。", 25000, None),
+    10: ("動画編集を学び、一発逆転を狙う！", -20000, "YouTuber"),
+    11: ("街頭インタビューを受け、謝礼をもらった。", 5000, None),
+    12: ("家賃の更新月。手痛い出費…", -60000, None),
+    13: ("実家からお米と仕送り仕送り金が届いた！", 30000, None),
+    14: ("友人にお金を貸したが返ってこない予感がする…", -20000, None),
+    15: ("給料日！さらにボーナスも支給！", 150000, None),
+    16: ("SNSの投稿がプチ炎上。心が傷ついた。", 0, None),
+    17: ("なんと仮想通貨が高騰！利確に成功！", 100000, None),
+    18: ("道でお財布を落としてしまった…絶望。", -15000, None),
+    19: ("お年玉（または臨時ボーナス）をもらった！", 20000, None),
+    20: ("怪しいセミナーに勧誘されたが、断って本を買った。", -3000, None),
+    21: ("ふるさと納税の返礼品で贅沢グルメを堪能。", -10000, None),
+    22: ("株への投資が大成功！大儲け！", 300000, None),
+    23: ("深夜のネットショッピングで爆買いしてしまった。", -40000, None),
+    24: ("ギックリ腰になり、整体通いが確定した。", -18000, None),
+    25: ("高級レストランで贅沢すぎるディナー。", -30000, None),
+    26: ("昔買った限定スニーカーが超高値で売れた！", 80000, None),
+    27: ("身に覚えのない有料サイトの請求に騙された…", -50000, None),
+    28: ("不運にも怪我をしてしまい、緊急入院。", -50000, None),
+    29: ("人生最後の勝負！競馬で万馬券を当てた！", 150000, None),
 }
 
-# 画面のタイトル
-st.title("🎲 Web版・人生すごろくゲーム")
+st.title("🎲 激動の人生すごろくゲーム")
 
-# ゲーム状態の初期化（ブラウザのリロード対策）
 if "player" not in st.session_state:
     st.session_state.player = None
 if "logs" not in st.session_state:
@@ -70,13 +85,17 @@ else:
         st.balloons()
         st.success("🏁 ゴールに到達しました！ゲーム終了です！")
 
-        if p.money > 100000:
+        if p.money > 200000:
             st.subheader(
-                f"✨ 最終資産 {p.money:,}円！ 大富豪の素晴らしい人生でしたね！"
+                f"👑 最終資産 {p.money:,}円！ 大富豪の素晴らしい人生でしたね！"
+            )
+        elif p.money > 100000:
+            st.subheader(
+                f"😊 最終資産 {p.money:,}円！ まずまず幸せな人生でした。"
             )
         else:
             st.subheader(
-                f"😢 最終資産 {p.money:,}円… ちょっと苦しい人生でしたが、次は頑張りましょう！"
+                f"😢 最終資産 {p.money:,}円… 苦しい破産寸前の人生でした。次は頑張りましょう！"
             )
 
         if st.button("もう一度遊ぶ 🔄"):
@@ -85,50 +104,65 @@ else:
             st.session_state.turn = 1
             st.rerun()
     else:
-        # ルーレットを回すボタン
         st.subheader(f"ーー ターン {st.session_state.turn} ーー")
         if st.button("🎲 ルーレットを回す"):
             spin = random.randint(1, 6)
             p.position += spin
             st.session_state.turn += 1
 
-            log_text = f"【ターン {st.session_state.turn-1}】🎲 ルーレットの結果: 【 {spin} 】"
+            log_text = f"【ターン {st.session_state.turn-1}】🎲 ルーレット: 【 {spin} 】"
 
             if p.position >= GOAL:
                 p.position = GOAL
                 log_text += " -> 🎉 ゴールイン！"
             else:
-                log_text += f" -> 🏃 {spin} マス進み、{p.position} マス目に着きました。"
+                log_text += f" -> 🏃 {p.position} マス目に進んだ！"
 
-                # イベント処理
+                # 必ずイベントが発生
                 if p.position in EVENTS:
                     text, money_change, special = EVENTS[p.position]
-                    log_text += f" ｜ イベント: {text}"
+                    log_text += f" ｜ 📢 イベント: {text}"
 
+                    # 【追加ルール】職業によるボーナス変動
+                    if money_change > 0 and p.job == "YouTuber":
+                        money_change = int(money_change * 1.5)
+                        log_text += " (★YouTuber特典で収入1.5倍！)"
+                    elif money_change > 0 and p.job == "会社員":
+                        money_change += 10000
+                        log_text += " (★会社員手当で+1万円！)"
+
+                    # 【追加ルール】既婚時のイベント補正
+                    if p.married and p.position == 12:
+                        money_change -= 30000
+                        log_text += " (★家族が増えたため家賃がさらに上乗せ…)"
+                    elif p.married and p.position == 25:
+                        money_change = int(money_change * 2)
+                        log_text += " (★夫婦二人分のディナーで出費2倍！)"
+
+                    # 所持金の変動処理
                     if money_change != 0:
                         p.money += money_change
                         sign = "＋" if money_change > 0 else "－"
                         log_text += (
-                            f" ({sign}{abs(money_change):,}円の変動)"
+                            f" 💰 {sign}{abs(money_change):,}円の変動！"
                         )
 
-                    if special == "結婚" and not p.married:
-                        p.married = True
-                        log_text += " 💍 ご結婚おめでとうございます！"
+                    # 特殊イベント処理
+                    if special == "結婚":
+                        if not p.married:
+                            p.married = True
+                            log_text += " 💍 ご結婚おめでとうございます！"
+                        else:
+                            p.money += 50000
+                            log_text += " 🎉 既に結婚しているので、結婚記念日の祝金5万円を貰った！"
                     elif special in ["会社員", "YouTuber"]:
                         p.job = special
-                        log_text += f" 💼 転職しました！"
-                else:
-                    log_text += (
-                        " ｜ イベント: 特に何も起きず、平穏な日々を過ごした。"
-                    )
+                        log_text += f" 💼 転職成功！"
 
-            # ログの先頭に追加して新しい順に表示
             st.session_state.logs.insert(0, log_text)
             st.rerun()
 
-    # ゲーム進行ログの表示
     if st.session_state.logs:
-        st.subheader("📜 出来事の記録")
+        st.subheader("📜 激動の人生ログ")
         for log in st.session_state.logs:
             st.write(log)
